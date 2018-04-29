@@ -1,6 +1,11 @@
-from img_to_text import meme_to_text
-from tts import text_to_speech
+import datetime
 
-# text = meme_to_text("memes.jpg")
-# tts_path = text_to_speech(text, "temp_audio", "memes")
-# print(tts_path)
+from get_memes import get_memes
+from slideshow import make_slideshow
+
+# Get date string to be used for folder name
+date = datetime.datetime.now().strftime("%Y-%m-%d")
+
+image_paths = get_memes(date)
+video_path = make_slideshow(image_paths, date)
+print(video_path)

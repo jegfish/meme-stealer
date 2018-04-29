@@ -6,3 +6,7 @@ __pycache__/
 *.png
 *.jpg
 *.gif
+client_secrets.json
+images/
+temp_audio/
+videos/

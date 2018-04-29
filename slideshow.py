@@ -76,53 +76,66 @@ def overlay_image(image, background):
 
     return output
 
-#Load image paths    
-img_path_list = load_img_paths("./tweets")
+def make_slideshow(image_path, date):
+    #Load image paths    
+    img_path_list = load_img_paths(image_path)
 
-video_background = cv2.imread("background.png")
-img_clips = []
-i = 0
-# Overlay all images onto background
-for img_path in img_path_list:
-    # Load and then resize/overlay image onto background
-    img = cv2.imread(img_path)
-    # Flip color of image so it doesn't look weird
-    img = img[:,:,::-1]
-    img = overlay_image(img, video_background)
+    video_background = cv2.imread("background.png")
+    img_clips = []
+    i = 0
+    # Overlay all images onto background
+    for img_path in img_path_list:
+        # Load and then resize/overlay image onto background
+        img = cv2.imread(img_path)
+        if img is None:
+            print(img_path)
+            exit()
+        # Flip color of image so it doesn't look weird
+        img = img[:,:,::-1]
+        img = overlay_image(img, video_background)
 
-    # Get text
-    text = img_to_text(img)
-    tts_path = os.path.join("temp_audio", "{}.mp3".format(i))
-    tts = True
-    try:
-        text_to_speech(text, tts_path)
-    except Exception as e:
-        if "No text to speak" in str(e):
-            tts = False
+        # Make sure ./temp_audio exists, if not then create it
+        if not os.path.exists("./temp_audio"):
+            os.makedirs("./temp_audio")
 
-    # Find duration for image based on tts length
-    duration = 4
-    if tts:
-        tts_audio = AudioFileClip(tts_path)
-        duration = tts_audio.duration
-        tts_audio = tts_audio.set_duration(duration)
+        # Get text
+        text = img_to_text(img)
+        tts_path = os.path.join("temp_audio", "{}.mp3".format(i))
+        tts = True
+        try:
+            text_to_speech(text, tts_path)
+        except Exception as e:
+            if "No text to speak" in str(e):
+                tts = False
 
-    # Make video clip out of image
-    clip = ImageClip(img, duration=duration)
-    if tts:
-        clip = clip.set_audio(tts_audio)
-    else:
-        make_frame = lambda t : 2*[0]
-        blank_audio = AudioClip.AudioClip(make_frame=make_frame, duration=duration)
-        clip = clip.set_audio(blank_audio)
-    print("Finished with {}".format(img_path))
-    img_clips.append(clip)
+        # Find duration for image based on tts length
+        duration = 4
+        if tts:
+            tts_audio = AudioFileClip(tts_path)
+            duration = tts_audio.duration
+            tts_audio = tts_audio.set_duration(duration)
 
-    i += 1
+        # Make video clip out of image
+        clip = ImageClip(img, duration=duration)
+        if tts:
+            clip = clip.set_audio(tts_audio)
+        else:
+            make_frame = lambda t : 2*[0]
+            blank_audio = AudioClip.AudioClip(make_frame=make_frame, duration=duration)
+            clip = clip.set_audio(blank_audio)
+        print("Finished with {}".format(img_path))
+        img_clips.append(clip)
 
-background_audio = AudioFileClip("Catmosphere - Candy-Coloured Sky.mp3")
-concat_clip = concatenate_videoclips(img_clips)
-audio = CompositeAudioClip([concat_clip.audio, background_audio])
-# Add background music
-concat_clip = concat_clip.set_audio(audio.set_duration(concat_clip.duration))
-concat_clip.write_videofile("movie.mp4", fps=24)
+        i += 1
+
+    # background_audio = AudioFileClip("Catmosphere - Candy-Coloured Sky.mp3")
+    concat_clip = concatenate_videoclips(img_clips)
+    # audio = CompositeAudioClip([concat_clip.audio, background_audio])
+    # Add background music
+    # concat_clip = concat_clip.set_audio(audio.set_duration(concat_clip.duration))
+
+    if not os.path.exists("./videos"):
+        os.makedirs("./videos")
+    path = "./videos/{}.mp4".format(date)
+    concat_clip.write_videofile(path, fps=24)
+    return path
