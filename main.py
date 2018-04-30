@@ -25,5 +25,5 @@ output = subprocess.check_output(["python",
                 video_path
 ])
 
-video_id = output.strip()
+str(video_id) = output.strip()
 print("https://www.youtube.com/watch?v=" + video_id)

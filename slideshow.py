@@ -81,6 +81,9 @@ def make_slideshow(image_path, date):
     img_path_list = load_img_paths(image_path)
 
     video_background = cv2.imread("background.png")
+    if video_background is None:
+        print("Couldn't find background.png")
+        exit()
     img_clips = []
     i = 0
     # Overlay all images onto background
@@ -88,8 +91,7 @@ def make_slideshow(image_path, date):
         # Load and then resize/overlay image onto background
         img = cv2.imread(img_path)
         if img is None:
-            print(img_path)
-            exit()
+            print("Problem with {}".format(img_path))
         # Flip color of image so it doesn't look weird
         img = img[:,:,::-1]
         img = overlay_image(img, video_background)
@@ -138,4 +140,9 @@ def make_slideshow(image_path, date):
         os.makedirs("./videos")
     path = "./videos/{}.mp4".format(date)
     concat_clip.write_videofile(path, fps=24)
+    # Clean temp_audio folder
+    print("Clearing temp_audio")
+    files = os.listdir("./temp_audio")
+    for file_name in files:
+        os.remove("./temp_audio/{}".format(file_name))
     return path

@@ -4,9 +4,16 @@
 __pycache__/
 *.pyc
 *.png
+!background.png
 *.jpg
 *.gif
 client_secrets.json
 images/
 temp_audio/
 videos/
+Include/
+Lib/
+man/
+Scripts/
+tcl/
+pip-selfcheck.json

@@ -7,7 +7,7 @@ valid_endings = (".jpg", ".png", ".jpeg")
 
 def get_memes(date):
     # Get 50-ish hot memes from r/dankmemes
-    payload = {"limit": "50"}
+    payload = {"limit": "100"}
     headers = {"User-Agent": "python:meme-stealer:v0.0.2 (by /u/altarrel)"}
     r = requests.get("https://www.reddit.com/r/dankmemes/hot.json", params=payload, headers=headers)
     if r.status_code != requests.codes.ok:
@@ -32,6 +32,11 @@ def get_memes(date):
         os.makedirs("./images/{}".format(date))
     if not os.path.exists("./images/{}".format(date)):
         os.makedirs("./images/{}".format(date))
+    else:
+        print("Found previous meme folder for today, emptying it.")
+        files = os.listdir("./images/{}".format(date))
+        for file_name in files:
+            os.remove("./images/{}/{}".format(date, file_name))
 
     i = 0
     for url in img_urls:
