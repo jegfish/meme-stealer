@@ -5,9 +5,9 @@ import requests
 
 valid_endings = (".jpg", ".png", ".jpeg")
 
-def get_memes(date):
+def get_memes(date, limit):
     # Get 50-ish hot memes from r/dankmemes
-    payload = {"limit": "100"}
+    payload = {"limit": limit}
     headers = {"User-Agent": "python:meme-stealer:v0.0.2 (by /u/altarrel)"}
     r = requests.get("https://www.reddit.com/r/dankmemes/hot.json", params=payload, headers=headers)
     if r.status_code != requests.codes.ok:
