@@ -1,7 +1,7 @@
 # meme-stealer
-Generates meme slideshows with text-to-speech narration.
+Generates video slideshows of memes.
 
-[Example video output.](https://youtu.be/NLQYBwTV7dM)
+Downloads recent meme images using the Reddit API, fits images onto a solid color background, uses Optical Character Recognition (OCR) to recognize text in the images, generates text-to-speech-audio, and finally generates a video slideshow with each meme showing for a minimum time or for the length of the audio.
 
 ## Installing
 Make sure you have `git`, `python3`, and `pipenv`.
